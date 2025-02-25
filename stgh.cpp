@@ -43,7 +43,7 @@ bool Question(std::string question) {
   }
 }
 
-void help() {
+void Help() {
   std::cout << "Unfortunatly, help is not available now." << std::endl;
   return;
 }
@@ -67,7 +67,8 @@ void Push() {
   }
 }
 
-std::map<std::string, std::function<void()>> commands = {{"push", Push}};
+std::map<std::string, std::function<void()>> commands = {{"push", Push},
+                                                         {"help", Help}};
 
 int main(int argc, char *argv[]) {
   if (argc < 2) {
@@ -76,4 +77,12 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   std::string command = argv[1];
+  if (commands.find(command) == commands.end()) {
+    std::cerr << "Command not found: " << command << std::endl
+              << "If you need help, please use 'stgh help'" << std::endl;
+    ;
+    return 1;
+  }
+  commands[command]();
+  return 0;
 }
