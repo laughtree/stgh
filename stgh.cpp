@@ -52,7 +52,11 @@ void Push() {
   std::string result;
   result = executeCommand("git remote -v");
   if (result.find(gitusrname) == std::string::npos) {
-    std::cout << "Warning: The remote origin repository isn't owned by you."
+    std::cout
+        << "Warning: The remote origin repository is probably not owned by you."
+        << std::endl;
+    std::cout << "Your username is \"" << gitusrname
+              << "\" and the remote origin url is \"" << result << "\""
               << std::endl;
     if (!Question("Are you sure you want to push?")) {
       return;
