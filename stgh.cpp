@@ -29,11 +29,11 @@ std::string executeCommand(std::string command) {
 
 bool Question(std::string question) {
   std::string answer;
-  std::cout << question << " [y/n]: ";
-  std::cin >> answer;
+  std::cout << question << " [y/N]: ";
+  std::getline(std::cin, answer);
   if (answer == "y" || answer == "Y") {
     return true;
-  } else if (answer == "n" || answer == "N") {
+  } else if (answer == "n" || answer == "N" || answer.empty()) {
     return false;
   } else {
     std::cout << "Please answer with 'y' or 'n'." << std::endl;
@@ -54,13 +54,16 @@ void Push() {
     return;
   }
   gitusrname.pop_back(); // Remove \n
-  remoteorigin = executeCommand("git remote -v");
-  if (remoteorigin.find(gitusrname) == std::string::npos) {
+  remoteorigin = executeCommand("git remote get-url origin");
+  std::string repoOwner = remoteorigin.substr(19, remoteorigin.find("/") - 19);
+  repoOwner = repoOwner.substr(0, repoOwner.find("/"));
+  std::cout << "Remote origin repository owner: " << repoOwner << std::endl;
+  if (gitusrname != repoOwner) {
     std::cout
         << "Warning: The remote origin repository is probably not owned by you."
         << std::endl;
     std::cout << "Your username is \n"
-              << gitusrname << "\nThe remote origin is \n"
+              << gitusrname << "\nThe remote origin url is \n"
               << remoteorigin << std::endl;
     if (!Question("Are you sure you want to push?")) {
       std::cout << "Push Cancelled" << std::endl;
