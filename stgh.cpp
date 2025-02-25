@@ -1,0 +1,76 @@
+#include <array>
+#include <cstdio>
+#include <functional>
+#include <iostream>
+#include <map>
+#include <memory>
+#include <ostream>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+
+#define VERSION "0.1.0"
+
+char *gitusrname = getenv("GIT_USERNAME");
+
+std::string executeCommand(std::string command) {
+  std::array<char, 128> buffer;
+  std::string res;
+
+  std::shared_ptr<FILE> pipe(popen(command.c_str(), "r"), pclose);
+  if (!pipe) {
+    throw std::runtime_error("Failed: popen execution failed.");
+  }
+  while (!feof(pipe.get())) {
+    if (fgets(buffer.data(), 128, pipe.get()) != nullptr) {
+      res += buffer.data();
+    }
+  }
+
+  return res;
+}
+
+bool Question(std::string question) {
+  std::string answer;
+  std::cout << question << " [y/n]: ";
+  std::cin >> answer;
+  if (answer == "y" || answer == "Y") {
+    return true;
+  } else if (answer == "n" || answer == "N") {
+    return false;
+  } else {
+    std::cout << "Please answer with 'y' or 'n'." << std::endl;
+    return Question(question);
+  }
+}
+
+void help() {
+  std::cout << "Unfortunatly, help is not available now." << std::endl;
+  return;
+}
+
+void Push() {
+  std::string result;
+  result = executeCommand("git remote -v");
+  if (result.find(gitusrname) == std::string::npos) {
+    std::cout << "Warning: The remote origin repository isn't owned by you."
+              << std::endl;
+    if (!Question("Are you sure you want to push?")) {
+      return;
+    }
+    result = executeCommand("git push");
+    std::cout << result << std::endl;
+    return;
+  }
+}
+
+std::map<std::string, std::function<void()>> commands = {{"push", Push}};
+
+int main(int argc, char *argv[]) {
+  if (argc < 2) {
+    std::cerr << "Usage: stgh <command> [args]" << std::endl
+              << "If you need help, please use 'stgh help'" << std::endl;
+    return 1;
+  }
+  std::string command = argv[1];
+}
