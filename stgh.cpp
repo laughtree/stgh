@@ -10,8 +10,6 @@
 
 #define VERSION "0.1.0"
 
-char *gitusrname = getenv("GIT_USERNAME");
-
 std::string executeCommand(std::string command) {
   std::array<char, 128> buffer;
   std::string res;
@@ -49,22 +47,28 @@ void Help() {
 }
 
 void Push() {
-  std::string result;
-  result = executeCommand("git remote -v");
-  if (result.find(gitusrname) == std::string::npos) {
+  std::string result, gitusrname, remoteorigin;
+  gitusrname = executeCommand("git config user.name");
+  if (gitusrname.empty()) {
+    std::cerr << "Error: No username found in git config." << std::endl;
+    return;
+  }
+  remoteorigin = executeCommand("git remote -v");
+  if (remoteorigin.find(gitusrname) == std::string::npos) {
     std::cout
         << "Warning: The remote origin repository is probably not owned by you."
         << std::endl;
-    std::cout << "Your username is \"" << gitusrname
-              << "\" and the remote origin url is \"" << result << "\""
-              << std::endl;
+    std::cout << "Your username is \n"
+              << gitusrname << "\nThe remote origin is \n"
+              << remoteorigin << std::endl;
     if (!Question("Are you sure you want to push?")) {
+      std::cout << "Push Cancelled" << std::endl;
       return;
     }
-    result = executeCommand("git push");
-    std::cout << result << std::endl;
-    return;
   }
+  result = executeCommand("git push");
+  std::cout << result << std::endl;
+  return;
 }
 
 std::map<std::string, std::function<void()>> commands = {{"push", Push},
