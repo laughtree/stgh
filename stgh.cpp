@@ -53,6 +53,7 @@ void Push() {
     std::cerr << "Error: No username found in git config." << std::endl;
     return;
   }
+  gitusrname.pop_back(); // Remove \n
   remoteorigin = executeCommand("git remote -v");
   if (remoteorigin.find(gitusrname) == std::string::npos) {
     std::cout
