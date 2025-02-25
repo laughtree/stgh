@@ -1,2 +1,5 @@
 test.cpp
 *.exe
+.suo
+sthpinstaller.sln
+sthpinstaller
