@@ -55,8 +55,8 @@ void Push() {
   }
   gitusrname.pop_back(); // Remove \n
   remoteorigin = executeCommand("git remote get-url origin");
-  std::string repoOwner = remoteorigin.substr(19, remoteorigin.find("/") - 19);
-  repoOwner = repoOwner.substr(0, repoOwner.find("/"));
+  std::string repoOwner = remoteorigin.substr(0, remoteorigin.rfind("/") - 1);
+  repoOwner = repoOwner.substr(repoOwner.rfind("/") + 1, repoOwner.size());
   std::cout << "Remote origin repository owner: " << repoOwner << std::endl;
   if (gitusrname != repoOwner) {
     std::cout
