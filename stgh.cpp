@@ -75,6 +75,18 @@ void Push() {
   return;
 }
 
+void NewBranch(const std::string& branchName) {
+    std::string command = "git checkout -b " + branchName;
+    std::string result = executeCommand(command);
+    std::cout << result << std::endl;
+}
+
+void Resume(const std::string& branchName) {
+    std::string command = "git checkout -b " + branchName + " HEAD~1";
+    std::string result = executeCommand(command);
+    std::cout << result << std::endl;
+}
+
 std::map<std::string, std::function<void()>> commands = {{"push", Push},
                                                          {"help", Help}};
 
@@ -85,12 +97,26 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   std::string command = argv[1];
-  if (commands.find(command) == commands.end()) {
+
+  if (command == "newbranch" || command == "resume") {
+      if (argc < 3) {
+          std::cerr << "Usage: stgh " << command << " <branch_name>" << std::endl;
+          return 1;
+      }
+      std::string branchName = argv[2];
+      if (command == "newbranch") {
+          NewBranch(branchName);
+      } else {
+          Resume(branchName);
+      }
+  }
+  else if (commands.find(command) == commands.end()) {
     std::cerr << "Command not found: " << command << std::endl
               << "If you need help, please use 'stgh help'" << std::endl;
-    ;
     return 1;
   }
-  commands[command]();
+  else {
+    commands[command]();
+  }
   return 0;
 }

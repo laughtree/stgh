@@ -8,6 +8,18 @@ Just git push but check whether your user.name is the same with the owner of rem
 stgh push
 ```
 
+### New Branch
+Create a new branch from the current branch and switch to it.
+```sh
+stgh newbranch <branch_name>
+```
+
+### Resume
+Create a new branch from the previous commit and switch to it.
+```sh
+stgh resume <branch_name>
+```
+
 ## Installation
 Run the `installer.exe` to install `stgh`. It will be installed to `C:\Program Files\stgh` and the directory will be added to your PATH.
 
@@ -30,5 +42,5 @@ g++ stgh.cpp -o stgh.exe
 
 To build the installer, you will need a C++ cross-compiler for Windows. On Linux, you can use MinGW-w64.
 ```sh
-x86_64-w64-mingw32-g++ installer.cpp -o installer.exe -static-libgcc -static-libstdc++
+x86_-w64-mingw32-g++ installer.cpp -o installer.exe -static-libgcc -static-libstdc++
 ```
